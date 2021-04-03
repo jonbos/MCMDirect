@@ -14,6 +14,8 @@ namespace MCMDirect.Areas.Store.Models {
             base.OnModelCreating(modelBuilder);
 
             //seed initial data
+            modelBuilder.ApplyConfiguration(new SeedManufacturer());
+            modelBuilder.ApplyConfiguration(new SeedCategory());
             modelBuilder.ApplyConfiguration(new SeedProduct());
         }
     }
