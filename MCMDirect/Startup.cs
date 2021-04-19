@@ -6,6 +6,7 @@ using MCMDirect.Areas.Store.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +25,18 @@ namespace MCMDirect {
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddNewtonsoftJson();
+            services.AddSession();
+
             services.AddDbContext<MCMContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("MCMContext")));
+
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                }).AddEntityFrameworkStores<MCMContext>()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,12 +53,14 @@ namespace MCMDirect {
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // add this
+            app.UseAuthorization(); // add this
 
             app.UseEndpoints(endpoints =>
             {
@@ -59,6 +72,7 @@ namespace MCMDirect {
                     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                 );
             });
+            MCMContext.CreateAdminUser(app.ApplicationServices).Wait();
         }
     }
 }

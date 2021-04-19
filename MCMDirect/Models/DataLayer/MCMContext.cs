@@ -1,8 +1,13 @@
+using System;
+using System.Threading.Tasks;
 using MCMDirect.Areas.Store.Models.SeedData;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MCMDirect.Areas.Store.Models {
-    public class MCMContext : DbContext {
+    public class MCMContext : IdentityDbContext<User> {
         public DbSet<Product> Products { get; set; }
 
         public MCMContext(DbContextOptions options) : base(options)
@@ -17,6 +22,35 @@ namespace MCMDirect.Areas.Store.Models {
             modelBuilder.ApplyConfiguration(new SeedManufacturer());
             modelBuilder.ApplyConfiguration(new SeedCategory());
             modelBuilder.ApplyConfiguration(new SeedProduct());
+        }
+
+        public static async Task CreateAdminUser(IServiceProvider serviceProvider)
+        {
+            UserManager<User> userManager =
+                serviceProvider.GetRequiredService<UserManager<User>>();
+            RoleManager<IdentityRole> roleManager =
+                serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            string username = "admin";
+            string password = "Sesame";
+            string roleName = "Admin";
+
+            // if role doesn't exist, create it
+            if (await roleManager.FindByNameAsync(roleName) == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            // if username doesn't exist, create it and add to role
+            if (await userManager.FindByNameAsync(username) == null)
+            {
+                User user = new User {UserName = username};
+                var result = await userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, roleName);
+                }
+            }
         }
     }
 }
