@@ -6,3 +6,4 @@ riderModule.iml
 **/wwwroot/lib
 .idea/
 **/appsettings*.json
+/MCMDirect/MCMDirect.sqlite
