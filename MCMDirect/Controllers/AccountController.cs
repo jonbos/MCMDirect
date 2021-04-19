@@ -22,6 +22,35 @@ namespace MCMDirect.Controllers {
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = model.Email
+                };
+                var result = await userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    bool isPersistent = false;
+                    await signInManager.SignInAsync(user, isPersistent);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> LogOut()
@@ -43,7 +72,8 @@ namespace MCMDirect.Controllers {
             if (ModelState.IsValid)
             {
                 var result = await signInManager.PasswordSignInAsync(
-                    model.Username, model.Password, isPersistent: model.RememberMe,
+                    model.Email
+                    , model.Password, isPersistent: model.RememberMe,
                     lockoutOnFailure: false);
 
                 if (result.Succeeded)
@@ -64,9 +94,9 @@ namespace MCMDirect.Controllers {
             return View(model);
         }
 
-        public ViewResult AccessDenied()
-        {
-            return View();
-        }
+        // public ViewResult AccessDenied()
+        // {
+        //     return View();
+        // }
     }
 }

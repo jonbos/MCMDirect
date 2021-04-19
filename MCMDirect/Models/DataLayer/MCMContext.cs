@@ -31,7 +31,7 @@ namespace MCMDirect.Areas.Store.Models {
             RoleManager<IdentityRole> roleManager =
                 serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string username = "admin";
+            string username = "admin@mcmdirect.com";
             string password = "Sesame";
             string roleName = "Admin";
 

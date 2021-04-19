@@ -4,7 +4,8 @@ namespace MCMDirect.Models.ViewModels {
     public class LoginViewModel {
         [Required(ErrorMessage = "Enter your username")]
         [StringLength(255)]
-        public string Username { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Enter your password")]
         [StringLength(255)]
