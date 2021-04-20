@@ -1,0 +1,18 @@
+<!-- These Login buttons and links could be a partial class or a view component -->
+@using Microsoft.AspNetCore.Identity
+@using MCMDirect.Areas.Store.Models
+@inject SignInManager<User> signInManager
+@if (signInManager.IsSignedIn(User))
+{
+    <div class="d-flex flex-column">
+        <form method="post" asp-controller="Account" asp-action="LogOut">
+            <input class="btn btn-sm btn-outline-dark" type="submit" value="Log Out"/>
+        </form>
+        <span class="text-dark">@User.Identity.Name</span>
+    </div>
+}
+else
+{
+    <a asp-controller="Account" asp-action="LogIn" class="mr-2 btn btn-sm btn-outline-dark me-2">Login</a>
+    <a asp-controller="Account" asp-action="Register" class="btn btn-sm btn-dark">Sign-up</a>
+}
