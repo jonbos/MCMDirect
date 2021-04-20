@@ -9,8 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace MCMDirect.Areas.Store.Models {
     public class MCMContext : IdentityDbContext<User> {
         public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<Manufacturer> Manufacturer { get; set; }
 
         public MCMContext(DbContextOptions options) : base(options)
         {

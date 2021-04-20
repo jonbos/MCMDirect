@@ -3,6 +3,6 @@ namespace MCMDirect.Areas.Store.Models {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
 
-        public byte[] Image { get; set; }
+        public string Image { get; set; }
     }
 }

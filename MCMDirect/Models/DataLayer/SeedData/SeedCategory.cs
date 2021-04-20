@@ -10,19 +10,19 @@ namespace MCMDirect.Areas.Store.Models.SeedData {
                 {
                     CategoryId = 1,
                     CategoryName = "Chairs",
-                    Image = SeedUtil.ReadFile("wwwroot/images/cat_chair.jpeg")
+                    Image = "cat_chair.jpeg"
                 },
                 new Category
                 {
                     CategoryId = 2,
                     CategoryName = "Sofas",
-                    Image = SeedUtil.ReadFile("wwwroot/images/cat_sofa.jpeg")
+                    Image = "cat_sofa.jpeg"
                 },
                 new Category
                 {
                     CategoryId = 3,
                     CategoryName = "Media Units",
-                    Image = SeedUtil.ReadFile("wwwroot/images/cat_console.jpeg")
+                    Image = "cat_console.jpeg"
                 }
             );
         }

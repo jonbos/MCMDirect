@@ -1,4 +1,5 @@
-@model MCMDirect.Areas.Store.Models.Category
+@using MCMDirect.Areas.Store.Models
+@model List<MCMDirect.Areas.Store.Models.Category>
 
 @{
     ViewBag.Title = "Categories";
@@ -13,6 +14,11 @@
         border:  4px solid #aaa;
         border-radius: 2rem;
     }
+    .card-img-top {
+                width: 100%;
+                height: 8vw;
+                object-fit: cover;
+    }
 </style>
 <div class="row">
     <div class="col-sm-8 offset-2">
@@ -22,5 +28,17 @@
         </div>
     </div>
 </div>
+<div class="card-columns mt-4">
+    @foreach (Category category in @Model)
+    {
+        <div class="card mt-4">
+            <img class="card-img-top" src="~/images/@category.Image" alt="">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a asp-controller='Category' asp-action-='Details' >@category.CategoryName</a>
+                </h4>
+            </div>
+        </div>
+    }
 
-
+</div>
