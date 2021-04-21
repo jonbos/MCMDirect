@@ -19,6 +19,10 @@ namespace MCMDirect.Areas.Store.Models {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products);
+
 
             //seed initial data
             modelBuilder.ApplyConfiguration(new SeedManufacturer());

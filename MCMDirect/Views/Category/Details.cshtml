@@ -1,8 +1,8 @@
-@model MCMDirect.Models.ViewModels.CategoryListViewModel
+@model MCMDirect.Areas.Store.Models.Category
 
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
 
-<h2>@Model.category</h2>
+<h2>@Model.Products.Count()</h2>

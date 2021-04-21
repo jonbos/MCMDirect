@@ -35,7 +35,7 @@
             <img class="card-img-top" src="~/images/@category.Image" alt="">
             <div class="card-body">
                 <h4 class="card-title">
-                    <a asp-controller='Category' asp-action-='Details' >@category.CategoryName</a>
+                    <a asp-action='Details' asp-route-id="@category.CategoryId">@category.CategoryName</a>
                 </h4>
             </div>
         </div>

@@ -36,7 +36,11 @@ namespace MCMDirect {
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
                 }).AddEntityFrameworkStores<MCMContext>()
+                .AddRoles<IdentityRole>()
                 .AddDefaultTokenProviders();
+            services
+                .AddScoped<IUserClaimsPrincipalFactory<User>,
+                    UserClaimsPrincipalFactory<User, IdentityRole>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,13 +68,14 @@ namespace MCMDirect {
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAreaControllerRoute(
+                    "Admin",
+                    "Admin",
+                    "Admin/{controller=Category}/{action=Index}/{id?}");
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute(
-                    name: "areas",
-                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
             });
             MCMContext.CreateAdminUser(app.ApplicationServices).Wait();
         }
