@@ -11,7 +11,7 @@
         @if (this.User.IsInRole("Admin"))
         {
             <span>
-                <a asp-controller="Category" asp-action="Index" asp-area="Admin" class=" btn btn-sm btn-outline-dark me-2">Admin <i class="fa fa-cog" aria-hidden="true"></i></a>
+                <a asp-area="Admin" asp-controller="Category" asp-action="Index" class=" btn btn-sm btn-outline-dark me-2">Admin <i class="fa fa-cog" aria-hidden="true"></i></a>
             </span>
         }
         else
