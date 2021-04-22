@@ -10,10 +10,6 @@
         </form>
         <span class="text-dark">@User.Identity.Name</span>
     </div>
-    @if (this.User.IsInRole("Admin"))
-    {
-        <h1>ADMIN</h1>
-    }
 }
 else
 {
