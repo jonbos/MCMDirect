@@ -70,17 +70,23 @@ namespace MCMDirect.Areas {
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Image")]
-            Category category)
+        public async Task<IActionResult> Create(CategoryViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                // Handle Image
+                if (vm.Image != null)
+                {
+                    // TODO refactor uploadedfile to take image
+                    vm.Category.Image = UploadedFile(vm);
+                }
+
+                _context.Add(vm.Category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(category);
+            return View(vm);
         }
 
         // GET: Category/Edit/5
@@ -107,8 +113,6 @@ namespace MCMDirect.Areas {
         }
 
         // POST: Category/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
