@@ -21,8 +21,13 @@ namespace MCMDirect.Controllers {
 
         public IActionResult Details(int id)
         {
-            var cat = _context.Category.Find(id);
-            return View(cat);
+            var vm = new CategoryListViewModel
+            {
+                Category = _context.Category.Find(id),
+                Products = _context.Products.Where(product => product.CategoryId == id)
+                    .Include(product => product.Manufacturer)
+            };
+            return View(vm);
         }
     }
 }

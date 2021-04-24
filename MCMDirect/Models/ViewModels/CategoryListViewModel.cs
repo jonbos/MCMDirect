@@ -4,7 +4,7 @@ using MCMDirect.Areas.Store.Models;
 
 namespace MCMDirect.Models.ViewModels {
     public class CategoryListViewModel {
-        public Category category { get; set; }
-        public IEnumerable<Product> products { get; set; }
+        public Category Category { get; set; }
+        public IEnumerable<Product> Products { get; set; }
     }
 }

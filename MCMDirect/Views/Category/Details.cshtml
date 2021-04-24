@@ -1,8 +1,28 @@
-@model MCMDirect.Areas.Store.Models.Category
+@using MCMDirect.Areas.Store.Models
+@model MCMDirect.Models.ViewModels.CategoryListViewModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = @Model.Category.CategoryName;
     Layout = "_Layout";
 }
+<div class="row row-cols-1 row-cols-md-2 g-4">
 
-<h2>@Model.Products.Count()</h2>
+    @foreach (Product product in @Model.Products)
+    {
+        <div class="col">
+            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductId">
+                <div class="card">
+                    <img src="~/images/@product.Image" class="card-img-top" alt="">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @product.Name
+                            <div class="float-right text-muted text-small">@product.Price</div>
+                        </h5>
+                        <p class="card-text text-muted">by @product.Manufacturer.Name</p>
+                    </div>
+                </div>
+
+            </a>
+        </div>
+    }
+</div>
