@@ -123,6 +123,7 @@ namespace MCMDirect.Areas {
                 return NotFound();
             }
 
+            ModelState.Remove("Image");
             if (ModelState.IsValid)
             {
                 try
