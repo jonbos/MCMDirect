@@ -3,14 +3,16 @@ using System;
 using MCMDirect.Areas.Store.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MCMDirect.Migrations
 {
     [DbContext(typeof(MCMContext))]
-    partial class MCMContextModelSnapshot : ModelSnapshot
+    [Migration("20210425230104_EditManufacturer")]
+    partial class EditManufacturer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
