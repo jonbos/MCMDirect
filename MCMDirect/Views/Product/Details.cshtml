@@ -5,7 +5,22 @@
     Layout = "_Layout";
 }
 
-<h2>@Model.Name</h2>
-<img src="~/images/@Model.Image" alt="">
-<h4>@Model.Price</h4>
-<div>@Model.Description</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 offset-2 text-center">
+            <h1 class="display-3">@Model.Name</h1>
+            <img src="~/images/@Model.Image" alt="">
+            <div>
+                <h1>@Model.Description.Split('.').GetValue(0)</h1>
+                <p>@Model.Description.Split('.', 2).GetValue(1)</p>
+            </div>
+            <h4>@($"{@Model.Price:C}")</h4>
+            <form asp-action="Add" asp-controller="Cart" method="post">
+                <button type="submit" name="id" value="@Model.ProductId"
+                        class="btn btn-primary">
+                    Add To Cart
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
