@@ -10,9 +10,10 @@ namespace MCMDirect.Controllers {
         private MCMContext _context;
         private readonly ILogger<Areas.CategoryController> _logger;
 
-        public CategoryController(MCMContext context)
+        public CategoryController(MCMContext context, ILogger<Areas.CategoryController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Index()

@@ -6,10 +6,11 @@ namespace MCMDirect.Controllers {
     public class ProductController : Controller {
         private MCMContext _context;
         private readonly ILogger<ProductController> _logger;
-
-        public ProductController(MCMContext context)
+        
+        public ProductController(MCMContext context, ILogger<ProductController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Details(int id)

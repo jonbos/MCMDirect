@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MCMDirect.Areas.Admin.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using MCMDirect.Areas.Store.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MCMDirect.Areas.Admin.Models.ExtensionMethods;
+using MCMDirect.Controllers;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace MCMDirect.Areas {
     [Area("Admin")]
@@ -18,11 +17,14 @@ namespace MCMDirect.Areas {
     public class CategoryController : Controller {
         private readonly MCMContext _context;
         private readonly IHostingEnvironment _hostEnvironment;
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(MCMContext context, IHostingEnvironment hostEnvironment)
+        public CategoryController(MCMContext context, IHostingEnvironment hostEnvironment,
+            ILogger<CategoryController> logger)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
+            _logger = logger;
         }
 
         // GET: Category
@@ -49,15 +51,6 @@ namespace MCMDirect.Areas {
             return View(category);
         }
 
-        private IFormFile ReadImageFile(string pathToFile)
-        {
-            string filePath = Path.Combine(_hostEnvironment.WebRootPath, "images", pathToFile);
-            using (var stream = System.IO.File.OpenRead(filePath))
-            {
-                var file = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(stream.Name));
-                return file;
-            }
-        }
 
         // GET: Category/Create
         public IActionResult Create()
@@ -77,8 +70,8 @@ namespace MCMDirect.Areas {
                 // Handle Image
                 if (vm.Image != null)
                 {
-                    // TODO refactor uploadedfile to take image
-                    vm.Category.Image = UploadedFile(vm);
+                    vm.Category.Image = ImageExtensionMethods.UploadFile(vm.Image,
+                        Path.Combine(_hostEnvironment.WebRootPath, "images"));
                 }
 
                 _context.Add(vm.Category);
@@ -105,7 +98,9 @@ namespace MCMDirect.Areas {
 
             CategoryViewModel vm = new CategoryViewModel
             {
-                Image = ReadImageFile(category.Image), Category = category
+                Image = ImageExtensionMethods.ReadImageFile(Path.Combine(_hostEnvironment.WebRootPath, "images",
+                    category.Image)),
+                Category = category
             };
 
 
@@ -131,7 +126,8 @@ namespace MCMDirect.Areas {
                     // Handle Image
                     if (model.Image != null)
                     {
-                        model.Category.Image = UploadedFile(model);
+                        model.Category.Image = ImageExtensionMethods.UploadFile(model.Image,
+                            Path.Combine(_hostEnvironment.WebRootPath, "images"));
                     }
 
                     _context.Update(model.Category);
@@ -187,21 +183,6 @@ namespace MCMDirect.Areas {
         private bool CategoryExists(int id)
         {
             return _context.Category.Any(e => e.CategoryId == id);
-        }
-
-        private string UploadedFile(CategoryViewModel model)
-        {
-            string uniqueFileName = null;
-
-            string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images");
-            uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
-            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                model.Image.CopyTo(fileStream);
-            }
-
-            return uniqueFileName;
         }
     }
 }

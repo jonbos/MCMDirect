@@ -10,12 +10,12 @@ namespace MCMDirect.Controllers {
         private UserManager<User> userManager;
         private SignInManager<User> signInManager;
         private readonly ILogger<AccountController> _logger;
-
-        public AccountController(UserManager<User> userMngr,
-            SignInManager<User> signInMngr)
+        
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<AccountController> logger)
         {
-            userManager = userMngr;
-            signInManager = signInMngr;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            _logger = logger;
         }
 
         [HttpGet]

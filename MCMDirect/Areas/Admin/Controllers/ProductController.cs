@@ -1,29 +1,38 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MCMDirect.Areas.Admin.Models.ExtensionMethods;
+using MCMDirect.Areas.Admin.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MCMDirect.Areas.Store.Models;
+using MCMDirect.Controllers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace MCMDirect.Areas.Admin.Controllers
-{
+namespace MCMDirect.Areas.Admin.Controllers {
     [Area("Admin")]
-    public class ProductController : Controller
-    {
+    public class ProductController : Controller {
         private readonly MCMContext _context;
+        private readonly IHostingEnvironment _hostEnvironment;
+        private readonly ILogger<ProductController> _logger;
 
-        public ProductController(MCMContext context)
+        public ProductController(MCMContext context, IHostingEnvironment hostEnvironment,
+            ILogger<ProductController> logger)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
+            _logger = logger;
         }
 
         // GET: Admin/Product
         public async Task<IActionResult> Index()
         {
             var mCMContext = _context.Products.Include(p => p.Category).Include(p => p.Manufacturer);
-            return View(await mCMContext.ToListAsync());
+            return View(mCMContext.ToList());
         }
 
         // GET: Admin/Product/Details/5
@@ -50,7 +59,7 @@ namespace MCMDirect.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName");
-            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId");
+            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "Name");
             return View();
         }
 
@@ -59,17 +68,28 @@ namespace MCMDirect.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,Description,Image,Price,ManufacturerId,CategoryId")] Product product)
+        public async Task<IActionResult> Create(
+            ProductViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                // Handle Image
+                if (vm.Image != null)
+                {
+                    vm.Product.Image = ImageExtensionMethods.UploadFile(vm.Image,
+                        Path.Combine(_hostEnvironment.WebRootPath, "images"));
+                }
+
+                _context.Add(vm.Product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName", product.CategoryId);
-            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId", product.ManufacturerId);
-            return View(product);
+
+            ViewData["CategoryId"] =
+                new SelectList(_context.Category, "CategoryId", "CategoryName", vm.Product.CategoryId);
+            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId",
+                vm.Product.ManufacturerId);
+            return View(vm.Product);
         }
 
         // GET: Admin/Product/Edit/5
@@ -85,9 +105,19 @@ namespace MCMDirect.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName", product.CategoryId);
-            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId", product.ManufacturerId);
-            return View(product);
+
+            ProductViewModel vm = new ProductViewModel
+            {
+                Product = product,
+                Image = ImageExtensionMethods.ReadImageFile(Path.Combine(_hostEnvironment.WebRootPath, "images",
+                    product.Image))
+            };
+
+            ViewData["CategoryId"] =
+                new SelectList(_context.Category, "CategoryId", "CategoryName", product.CategoryId);
+            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "Name",
+                product.ManufacturerId);
+            return View(vm);
         }
 
         // POST: Admin/Product/Edit/5
@@ -95,23 +125,33 @@ namespace MCMDirect.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Description,Image,Price,ManufacturerId,CategoryId")] Product product)
+        public async Task<IActionResult> Edit(int id,
+            ProductViewModel model)
         {
-            if (id != product.ProductId)
+            if (id != model.Product.ProductId)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("Image");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(product);
+                    // Handle Image
+                    if (model.Image != null)
+                    {
+                        model.Product.Image = ImageExtensionMethods.UploadFile(model.Image,
+                            Path.Combine(_hostEnvironment.WebRootPath, "images"));
+                    }
+
+                    _context.Update(model.Product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductId))
+                    if (!ProductExists(model.Product.ProductId))
                     {
                         return NotFound();
                     }
@@ -120,11 +160,15 @@ namespace MCMDirect.Areas.Admin.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName", product.CategoryId);
-            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId", product.ManufacturerId);
-            return View(product);
+
+            ViewData["CategoryId"] =
+                new SelectList(_context.Category, "CategoryId", "CategoryName", model.Product.CategoryId);
+            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId",
+                model.Product.ManufacturerId);
+            return View(model);
         }
 
         // GET: Admin/Product/Delete/5
