@@ -17,6 +17,7 @@ namespace MCMDirect.Controllers {
 
         public IActionResult Index()
         {
+            _logger.Log(LogLevel.Information, "Getting Home Page");
             return View();
         }
     }
