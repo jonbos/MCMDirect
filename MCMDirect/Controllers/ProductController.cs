@@ -1,18 +1,22 @@
 using MCMDirect.Areas.Store.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace MCMDirect.Controllers {
     public class ProductController : Controller {
         private MCMContext _context;
-
-        public ProductController(MCMContext context)
+        private readonly ILogger<ProductController> _logger;
+        
+        public ProductController(MCMContext context, ILogger<ProductController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Details(int id)
         {
             var p = _context.Products.Find(id);
+            _logger.Log(LogLevel.Information, "Getting details page for Product ID: " + p.ProductId);
             return View(p);
         }
     }

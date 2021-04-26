@@ -20,7 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="backup" />
+      <Folder Include="Areas\Admin\Views\Product" />
+      <Folder Include="Areas\Admin\Views\Shared" />
       <Folder Include="Migrations" />
     </ItemGroup>
 
@@ -46,10 +47,6 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\LICENSE" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="backup\_AdminNavbar.cshtml" />
     </ItemGroup>
 
 </Project>

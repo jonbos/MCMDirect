@@ -13,7 +13,10 @@
 </head>
 <body>
 @await Html.PartialAsync("_Navbar")
-
+@if ((string) @ViewContext.RouteData.Values["area"]?.ToString() == "Admin")
+{
+    @await Html.PartialAsync("_AdminNavbar")
+}
 <div class="container">
     @RenderBody()
 </div>

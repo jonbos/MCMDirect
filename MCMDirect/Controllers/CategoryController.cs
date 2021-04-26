@@ -3,19 +3,24 @@ using MCMDirect.Areas.Store.Models;
 using MCMDirect.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MCMDirect.Controllers {
     public class CategoryController : Controller {
         private MCMContext _context;
+        private readonly ILogger<Areas.CategoryController> _logger;
 
-        public CategoryController(MCMContext context)
+        public CategoryController(MCMContext context, ILogger<Areas.CategoryController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Index()
         {
             var data = _context.Category.ToList();
+            _logger.Log(LogLevel.Information, "Getting Category List");
+
             return View(data);
         }
 
@@ -27,6 +32,8 @@ namespace MCMDirect.Controllers {
                 Products = _context.Products.Where(product => product.CategoryId == id)
                     .Include(product => product.Manufacturer)
             };
+            _logger.Log(LogLevel.Information, "Getting details page for Category ID: " + id);
+
             return View(vm);
         }
     }

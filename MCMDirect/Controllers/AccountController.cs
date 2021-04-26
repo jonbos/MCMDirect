@@ -3,22 +3,25 @@ using MCMDirect.Areas.Store.Models;
 using MCMDirect.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace MCMDirect.Controllers {
     public class AccountController : Controller {
         private UserManager<User> userManager;
         private SignInManager<User> signInManager;
-
-        public AccountController(UserManager<User> userMngr,
-            SignInManager<User> signInMngr)
+        private readonly ILogger<AccountController> _logger;
+        
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<AccountController> logger)
         {
-            userManager = userMngr;
-            signInManager = signInMngr;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult Register()
         {
+            _logger.Log(LogLevel.Information, "Getting registration page");
             return View();
         }
 
@@ -37,17 +40,21 @@ namespace MCMDirect.Controllers {
                 {
                     bool isPersistent = false;
                     await signInManager.SignInAsync(user, isPersistent);
+                    _logger.Log(LogLevel.Information, "Registed user: " + model.Email);
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
                     foreach (var error in result.Errors)
                     {
+                        _logger.Log(LogLevel.Information,
+                            "Errors while registering user: " + model.Email + ": " + error);
                         ModelState.AddModelError("", error.Description);
                     }
                 }
             }
 
+            _logger.Log(LogLevel.Information, "Invalid registration for user: " + model.Email);
             return View(model);
         }
 
@@ -55,6 +62,7 @@ namespace MCMDirect.Controllers {
         [HttpPost]
         public async Task<IActionResult> LogOut()
         {
+            _logger.Log(LogLevel.Information, "Logging out user: " + User.Identity.Name);
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
@@ -63,6 +71,7 @@ namespace MCMDirect.Controllers {
         public IActionResult LogIn(string returnURL = "")
         {
             var model = new LoginViewModel {ReturnUrl = returnURL};
+            _logger.Log(LogLevel.Information, "Getting log in page");
             return View(model);
         }
 
@@ -78,6 +87,8 @@ namespace MCMDirect.Controllers {
 
                 if (result.Succeeded)
                 {
+                    _logger.Log(LogLevel.Information, "Successfully logged in user: " + User.Identity.Name);
+
                     if (!string.IsNullOrEmpty(model.ReturnUrl) &&
                         Url.IsLocalUrl(model.ReturnUrl))
                     {
@@ -90,13 +101,9 @@ namespace MCMDirect.Controllers {
                 }
             }
 
+            _logger.Log(LogLevel.Information, "Invalid credentials for user: " + User.Identity.Name);
             ModelState.AddModelError("", "Invalid username/password.");
             return View(model);
         }
-
-        // public ViewResult AccessDenied()
-        // {
-        //     return View();
-        // }
     }
 }
