@@ -89,7 +89,7 @@ namespace MCMDirect.Areas.Admin.Controllers {
                 new SelectList(_context.Category, "CategoryId", "CategoryName", vm.Product.CategoryId);
             ViewData["ManufacturerId"] = new SelectList(_context.Manufacturer, "ManufacturerId", "ManufacturerId",
                 vm.Product.ManufacturerId);
-            return View(vm.Product);
+            return View(vm);
         }
 
         // GET: Admin/Product/Edit/5
