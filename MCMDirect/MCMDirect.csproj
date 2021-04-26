@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <Folder Include="Areas\Admin\Views\Product" />
+      <Folder Include="Areas\Admin\Views\Shared" />
       <Folder Include="Migrations" />
     </ItemGroup>
 
