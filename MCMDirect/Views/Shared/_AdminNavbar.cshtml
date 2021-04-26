@@ -1,0 +1,26 @@
+@using MCMDirect.Models.ViewModels
+@model dynamic
+@{
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var current = ViewContext.RouteData.Values["area"]?.ToString() ??
+                  ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between pb-4">
+    <h1 class="text-danger px-3">Admin</h1>
+    <span class="display d-flex align-items-center px-4 col-md-3 mb-2 text-dark text-decoration-none text-danger">
+        ADMIN
+    </span>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+
+        <li>
+            <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="@Nav.Active("Category", current) nav-link px-3 link-dark">Categories</a>
+        </li>
+        <li>
+            <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="@Nav.Active("Category", current) nav-link px-3 link-dark">Products</a>
+        </li>
+
+    </ul>
+</header>
