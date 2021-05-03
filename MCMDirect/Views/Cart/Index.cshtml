@@ -11,15 +11,17 @@
 <h2>Cart</h2>
 <table>
     <thead>
-        <th>Product</th>
-        <th>Price</th>
-        <th>Qty</th>
+    <th>Product</th>
+    <th>Price</th>
+    <th>Qty</th>
     </thead>
     <tbody>
     @foreach (CartItem item in Model.List)
     {
         <tr>
-            <td>@item.Product.Name</td>
+            <td>
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@item.Product.ProductID">@item.Product.Name</a>
+            </td>
             <td>@item.Product.Price</td>
             <td>@item.Quantity</td>
         </tr>
