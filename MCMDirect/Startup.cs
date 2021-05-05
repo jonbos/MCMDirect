@@ -29,7 +29,8 @@ namespace MCMDirect {
             services.AddSession();
 
             services.AddDbContext<MCMContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("MCMContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("MCMContext")));
+
 
             services.AddIdentity<User, IdentityRole>(options =>
                 {
